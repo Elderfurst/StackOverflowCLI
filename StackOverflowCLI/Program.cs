@@ -2,6 +2,9 @@
 using System.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using Colorful;
+using System.Drawing;
+using System.Web;
 
 namespace StackOverflowCLI
 {
@@ -21,16 +24,22 @@ namespace StackOverflowCLI
             //Get the single most voted on question that has an accepted answer
             request.AddParameter("pagesize", "1");
             request.AddParameter("order", "desc");
-            request.AddParameter("sort", "votes");
+            request.AddParameter("sort", "relevance");
             request.AddParameter("site", "stackoverflow");
             request.AddParameter("filter", "withbody");
             request.AddParameter("accepted", "True");
-            request.AddParameter("title", soSearch);
+            request.AddParameter("q", soSearch);
 
             var response = JObject.Parse(client.Execute(request).Content);
 
-            answer.Title = RemoveHtml(response["items"][0]["title"].ToString());
-            answer.Body = RemoveHtml(response["items"][0]["body"].ToString());
+            if(!response["items"].HasValues)
+            {
+                Console.WriteLine("soflow: No questions match your criteria", Color.White);
+                return;
+            }
+
+            answer.Title = HttpUtility.HtmlDecode(RemoveHtml(response["items"][0]["title"].ToString()));
+            answer.Body = HttpUtility.HtmlDecode(RemoveHtml(response["items"][0]["body"].ToString()));
 
             var answerId = (int)response["items"][0]["accepted_answer_id"];
 
@@ -45,7 +54,7 @@ namespace StackOverflowCLI
 
             var answerResponse = JObject.Parse(client.Execute(answerRequest).Content);
 
-            answer.AcceptedAnswer = RemoveHtml(answerResponse["items"][0]["body"].ToString());
+            answer.AcceptedAnswer = HttpUtility.HtmlDecode(RemoveHtml(answerResponse["items"][0]["body"].ToString()));
 
             answer.Print();
         }

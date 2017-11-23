@@ -22,7 +22,6 @@ namespace StackOverflowCLI
                 new Formatter("Accepted Answer:", Color.Green),
                 new Formatter(AcceptedAnswer, Color.White)
             };
-
             Colorful.Console.WriteLineFormatted(output, Color.White, variables);
         }
     }
