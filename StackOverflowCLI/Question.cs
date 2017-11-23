@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Colorful;
+using System;
+using System.Drawing;
 
 namespace StackOverflowCLI
 {
@@ -12,9 +10,20 @@ namespace StackOverflowCLI
         public string Body;
         public string AcceptedAnswer;
 
-        public string FormatAnswer()
+        public void Print()
         {
-            return "Title: " + Title + Environment.NewLine + "Body: " + Body + Environment.NewLine + "AcceptedAnswer: " + AcceptedAnswer + Environment.NewLine;
+            string output = "{0} {1}" + Environment.NewLine + Environment.NewLine + "{2}" + Environment.NewLine + "{3}" + Environment.NewLine + Environment.NewLine + "{4}" + Environment.NewLine + "{5}" + Environment.NewLine;
+            Formatter[] variables = new Formatter[]
+            {
+                new Formatter("Title:", Color.Green),
+                new Formatter(Title, Color.White),
+                new Formatter("Question:", Color.Green),
+                new Formatter(Body, Color.White),
+                new Formatter("Accepted Answer:", Color.Green),
+                new Formatter(AcceptedAnswer, Color.White)
+            };
+
+            Colorful.Console.WriteLineFormatted(output, Color.White, variables);
         }
     }
 }

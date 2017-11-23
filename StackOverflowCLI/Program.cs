@@ -1,8 +1,7 @@
 ﻿using RestSharp;
 using System.Configuration;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
+using System.Text.RegularExpressions;
 
 namespace StackOverflowCLI
 {
@@ -30,8 +29,8 @@ namespace StackOverflowCLI
 
             var response = JObject.Parse(client.Execute(request).Content);
 
-            answer.Title = response["items"][0]["title"].ToString();
-            answer.Body = response["items"][0]["body"].ToString();
+            answer.Title = RemoveHtml(response["items"][0]["title"].ToString());
+            answer.Body = RemoveHtml(response["items"][0]["body"].ToString());
 
             var answerId = (int)response["items"][0]["accepted_answer_id"];
 
@@ -46,9 +45,14 @@ namespace StackOverflowCLI
 
             var answerResponse = JObject.Parse(client.Execute(answerRequest).Content);
 
-            answer.AcceptedAnswer = answerResponse["items"][0]["body"].ToString();
+            answer.AcceptedAnswer = RemoveHtml(answerResponse["items"][0]["body"].ToString());
 
-            Console.WriteLine(answer.FormatAnswer());
+            answer.Print();
+        }
+
+        private static string RemoveHtml(string raw)
+        {
+            return Regex.Replace(raw, @"<[^>]+>|&nbsp;", "").Trim();
         }
     }
 }
