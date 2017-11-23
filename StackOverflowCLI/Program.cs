@@ -18,7 +18,8 @@ namespace StackOverflowCLI
 
             var client = new RestClient("https://api.stackexchange.com");
             var request = new RestRequest("2.2/search/advanced");
-
+            
+            //Get the single most voted on question that has an accepted answer
             request.AddParameter("pagesize", "1");
             request.AddParameter("order", "desc");
             request.AddParameter("sort", "votes");
@@ -36,6 +37,7 @@ namespace StackOverflowCLI
 
             var answerRequest = new RestRequest("2.2/answers/" + answerId);
 
+            //Get the accepted answer for the previously retrieved question
             answerRequest.AddParameter("pagesize", "1");
             answerRequest.AddParameter("order", "desc");
             answerRequest.AddParameter("sort", "votes");
